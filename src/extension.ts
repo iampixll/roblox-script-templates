@@ -1,26 +1,93 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+import * as vscode from 'vscode'
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
-
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "roblox-script-templates" is now active!');
-
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposable = vscode.commands.registerCommand('roblox-script-templates.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from Roblox Script Templates!');
-	});
-
-	context.subscriptions.push(disposable);
+type ScriptType = 'server' | 'client' | 'module'
+const IDENTIFIER_PATTERN = /^[A-Za-z_][A-Za-z0-9_]*$/
+const SUFFIXES: Record<ScriptType, string> = {
+	server: '.server.luau',
+	client: '.client.luau',
+	module: ".luau"
 }
 
-// This method is called when your extension is deactivated
-export function deactivate() {}
+export function activate(context: vscode.ExtensionContext) {
+	const disposable = vscode.commands.registerCommand('roblox-script-templates.newScript', async (uri?: vscode.Uri) => {
+		const targetDir = await resolveTargetDir(uri)
+		if (!targetDir) {
+			vscode.window.showErrorMessage('No target folder found.')
+			return
+		}
+
+		const type = await pickScriptType()
+		if (!type) return
+
+		const name = await askScriptName()
+		if (!name) return
+
+		const content = buildContent(type, name)
+		const fileUri = vscode.Uri.joinPath(targetDir, name + SUFFIXES[type])
+
+		if (await fileExists(fileUri)) {
+			vscode.window.showErrorMessage(`File already exists: ${name}${SUFFIXES[type]}`)
+			return
+		}
+
+		try {
+			await vscode.workspace.fs.writeFile(fileUri, new TextEncoder().encode(content))
+			await vscode.window.showTextDocument(fileUri)
+		} catch (error) {
+			vscode.window.showErrorMessage(`Could not create file: ${error}`)
+		}
+	})
+
+	context.subscriptions.push(disposable)
+}
+
+async function resolveTargetDir(uri?: vscode.Uri): Promise<vscode.Uri | undefined> {
+	if (uri) {
+		const stat = await vscode.workspace.fs.stat(uri)
+		if (stat.type & vscode.FileType.Directory) return uri
+
+		return vscode.Uri.joinPath(uri, '..')
+	}
+
+	return vscode.workspace.workspaceFolders?.[0]?.uri
+}
+
+async function pickScriptType(): Promise<ScriptType | undefined> {
+	const items: { label: string; type: ScriptType }[] = [
+		{ label: 'Server Script', type: 'server' },
+		{ label: 'Client Script', type: 'client' },
+		{ label: 'Module Script', type: 'module' }
+	]
+
+	const pick = await vscode.window.showQuickPick(items, { placeHolder: 'Which kind of script?' })
+	return pick?.type
+}
+
+async function askScriptName(): Promise<string | undefined> {
+	return vscode.window.showInputBox({ prompt: 'Script name', placeHolder: 'MyScript', validateInput: validateScriptName })
+}
+
+function validateScriptName(value: string): string | undefined {
+	if (value.length === 0) return 'Enter a name'
+	if (!IDENTIFIER_PATTERN.test(value)) return 'Use only letters, digits and _, not starting with a digit.'
+
+	return undefined
+}
+
+function buildContent(type: ScriptType, name: string): string {
+	const config = vscode.workspace.getConfiguration('roblox-script-templates')
+	const template = config.get<string>(`templates.${type}`, '')
+
+	return template.replaceAll('{name}', name)
+}
+
+async function fileExists(uri: vscode.Uri): Promise<boolean> {
+	try {
+		await vscode.workspace.fs.stat(uri)
+		return true
+	} catch {
+		return false
+	}
+}
+
+export function deactivate() { }

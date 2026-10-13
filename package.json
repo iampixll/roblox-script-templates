@@ -14,10 +14,44 @@
   "contributes": {
     "commands": [
       {
-        "command": "roblox-script-templates.helloWorld",
-        "title": "Hello World"
+        "command": "roblox-script-templates.newScript",
+        "title": "New Roblox Script..."
       }
-    ]
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "roblox-script-templates.newScript",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Roblox Script Templates",
+      "properties": {
+        "roblox-script-templates.templates.server": {
+          "type": "string",
+          "order": 0,
+          "editPresentation": "multilineText",
+          "default": "--- | Services | ---\n\n--- | Modules | ---\n\n--- | Variables | ---\n\n--- | Functions | ---\n",
+          "markdownDescription": "Template for new **Server Scripts** (`.server.luau`). `{name}` is replaced with the script name."
+        },
+        "roblox-script-templates.templates.client": {
+          "type": "string",
+          "order": 1,
+          "editPresentation": "multilineText",
+          "default": "--- | Services | ---\n\n--- | Modules | ---\n\n--- | Variables | ---\n\n--- | Functions | ---\n",
+          "markdownDescription": "Template for new **Client Scripts** (`.client.luau`). `{name}` is replaced with the script name."
+        },
+        "roblox-script-templates.templates.module": {
+          "type": "string",
+          "order": 2,
+          "editPresentation": "multilineText",
+          "default": "--- | Services | ---\n\n--- | Modules | ---\n\n--- | Types | ---\n\nlocal {name} = {}\n\nreturn {name}",
+          "markdownDescription": "Template for new **Module Scripts** (`.luau`). `{name}` is replaced with the script name, e.g. `local {name} = {}`."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
