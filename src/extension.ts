@@ -16,11 +16,25 @@ export function activate(context: vscode.ExtensionContext) {
 			return
 		}
 
-		const type = await pickScriptType()
-		if (!type) return
+		const config = vscode.workspace.getConfiguration('roblox-script-templates')
+		const askNameFirst = config.get<string>('firstPrompt') === 'name'
 
-		const name = await askScriptName()
-		if (!name) return
+		let type: ScriptType | undefined
+		let name: string | undefined
+
+		if (askNameFirst) {
+			name = await askScriptName();
+			if (!name) return
+
+			type = await pickScriptType();
+			if (!type) return
+		} else {
+			type = await pickScriptType();
+			if (!type) return
+
+			name = await askScriptName();
+			if (!name) return
+		}
 
 		const content = buildContent(type, name)
 		const fileUri = vscode.Uri.joinPath(targetDir, name + SUFFIXES[type])

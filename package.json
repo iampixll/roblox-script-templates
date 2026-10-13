@@ -29,23 +29,37 @@
     "configuration": {
       "title": "Roblox Script Templates",
       "properties": {
-        "roblox-script-templates.templates.server": {
+        "roblox-script-templates.firstPrompt": {
           "type": "string",
           "order": 0,
+          "enum": [
+            "type",
+            "name"
+          ],
+          "enumDescriptions": [
+            "Ask for the script type first.",
+            "Ask for the script name first."
+          ],
+          "default": "type",
+          "markdownDescription": "Which option to prompt first when creating a new script."
+        },
+        "roblox-script-templates.templates.server": {
+          "type": "string",
+          "order": 1,
           "editPresentation": "multilineText",
           "default": "--- | Services | ---\n\n--- | Modules | ---\n\n--- | Variables | ---\n\n--- | Functions | ---\n",
           "markdownDescription": "Template for new **Server Scripts** (`.server.luau`). `{name}` is replaced with the script name."
         },
         "roblox-script-templates.templates.client": {
           "type": "string",
-          "order": 1,
+          "order": 2,
           "editPresentation": "multilineText",
           "default": "--- | Services | ---\n\n--- | Modules | ---\n\n--- | Variables | ---\n\n--- | Functions | ---\n",
           "markdownDescription": "Template for new **Client Scripts** (`.client.luau`). `{name}` is replaced with the script name."
         },
         "roblox-script-templates.templates.module": {
           "type": "string",
-          "order": 2,
+          "order": 3,
           "editPresentation": "multilineText",
           "default": "--- | Services | ---\n\n--- | Modules | ---\n\n--- | Types | ---\n\nlocal {name} = {}\n\nreturn {name}",
           "markdownDescription": "Template for new **Module Scripts** (`.luau`). `{name}` is replaced with the script name, e.g. `local {name} = {}`."
