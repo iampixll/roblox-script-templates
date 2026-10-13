@@ -2,9 +2,22 @@
   "name": "roblox-script-templates",
   "displayName": "Roblox Script Templates",
   "description": "Create Roblox scripts (module/server/client) from configurable templates.",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "publisher": "iampixll",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/iampixll/roblox-script-templates"
+  },
+  "keywords": [
+    "roblox",
+    "luau",
+    "rojo",
+    "template"
+  ],
+  "license": "MIT",
+  "icon": "images/icon.png",
   "engines": {
-    "vscode": "^1.140.0"
+    "vscode": "^1.74.0"
   },
   "categories": [
     "Other"
@@ -75,7 +88,7 @@
   },
   "devDependencies": {
     "@types/node": "24.x",
-    "@types/vscode": "^1.140.0",
+    "@types/vscode": "^1.74.0",
     "eslint": "^10.5.0",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.61.1"

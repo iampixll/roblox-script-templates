@@ -1,71 +1,72 @@
-# roblox-script-templates README
+# Roblox Script Templates
 
-This is the README for your extension "roblox-script-templates". After writing up a brief description, we recommend including the following sections.
+Create Roblox scripts from your own templates, right from the VS Code explorer.
 
-## Features
+![Context menu entry](images/context-menu.png)
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+## Usage
 
-For example if there is an image subfolder under your extension project workspace:
+1. Right-click a folder or file in the explorer and choose **New Roblox Script...**
+2. Pick the script type.
+3. Enter a name.
 
-\!\[feature X\]\(images/feature-x.png\)
+![Script type picker](images/type-picker.png)
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+![Script name input](images/name-input.png)
+
+The file is created with the matching extension and opened right away:
+
+| Type          | File               |
+| ------------- | ------------------ |
+| Server Script | `Name.server.luau` |
+| Client Script | `Name.client.luau` |
+| Module Script | `Name.luau`        |
+
+The file names follow the [Rojo](https://rojo.space/) conventions.
+
+- Right-clicking a file creates the script next to that file.
+- Running the command from the Command Palette creates the script in the first workspace folder.
+- Existing files are never overwritten.
+
+### Script names
+
+Names may only contain letters, digits and `_`, and must not start with a digit. This keeps every name a valid Luau identifier, so `local {name} = {}` in a module always works. Don't type the file extension, it is added for you.
+
+## Settings
+
+| Setting                                    | Default | Description                                     |
+| ------------------------------------------ | ------- | ----------------------------------------------- |
+| `roblox-script-templates.firstPrompt`      | `type`  | Ask for the script `type` or the `name` first.  |
+| `roblox-script-templates.templates.server` | *       | Template for server scripts.                    |
+| `roblox-script-templates.templates.client` | *       | Template for client scripts.                    |
+| `roblox-script-templates.templates.module` | *       | Template for module scripts.                    |
+
+\* Section comments, see below.
+
+Templates are edited as multi-line text in the Settings UI. `{name}` is replaced with the script name.
+
+![Settings](images/settings.png)
+
+Default module template:
+
+```lua
+--- | Services | ---
+
+--- | Modules | ---
+
+--- | Types | ---
+
+local {name} = {}
+
+return {name}
+```
+
+The server and client templates contain the Services, Modules, Variables and Functions sections.
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+VS Code 1.74 or newer.
 
-## Extension Settings
+## License
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+[MIT](LICENSE)
